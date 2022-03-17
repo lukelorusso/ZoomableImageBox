@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ZoomableImageBox Sample</string>
+    <string name="content_description_refresh">Refresh</string>
+</resources>
