@@ -40,23 +40,31 @@ private const val ICON_PADDING = 8
  * Licensed under the Apache License Version 2.0
  *
  * This [Composable] [Box] allows you to render an [Image] which can be zoomed in/out and rotated.
- * @param modifier applied to the Box
- * @param contentAlignment determines the ResetButton position
- * @param contentDescription of your image
- * @param painter resource of your image
- * @param imageContentScale can be changed
- * @param shouldRotate can be toggled
- * @param resetIconContent can be customized
+ * @param modifier applied to the [Box]
+ * @param contentAlignment applied to the [Box]: determines the reset [IconButton] position
+ * @param contentDescription of your [Image]
+ * @param painter drawable resource of your [Image]
+ * @param imageContentScale of your [Image]: can be changed
+ * @param shouldRotate your [Image]: can be toggled on/off
+ * @param showResetIconButton can be toggled on/off
+ * @param resetIconButtonModifier is the customizable modifier of the [IconButton], which contains
+ *  the resetIconButtonContent (useful if showResetButton is true)
+ * @param resetIconButtonContent is the customizable content of the [IconButton] (useful if
+ *  showResetButton is true)
  */
 @Composable
 fun ZoomableImageBox(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.BottomEnd,
     contentDescription: String? = null,
     painter: Painter,
     imageContentScale: ContentScale = ContentScale.Inside,
     shouldRotate: Boolean = false,
-    resetIconContent: @Composable () -> Unit = {
+    showResetIconButton: Boolean = true,
+    resetIconButtonModifier: Modifier = Modifier
+        .padding(ICON_PADDING.dp)
+        .background(MaterialTheme.colors.surface, shape = CircleShape),
+    resetIconButtonContent: @Composable () -> Unit = {
         Icon(
             imageVector = Icons.Default.Refresh,
             contentDescription = stringResource(id = android.R.string.cancel),
@@ -64,16 +72,19 @@ fun ZoomableImageBox(
         )
     }
 ) {
+    //region properties
     val angle = remember { mutableStateOf(INITIAL_ANGLE) }
     val zoom = remember { mutableStateOf(INITIAL_ZOOM) }
     val offsetX = remember { mutableStateOf(INITIAL_OFFSET) }
     val offsetY = remember { mutableStateOf(INITIAL_OFFSET) }
-    val showResetButton = remember { mutableStateOf(false) }
+    val isGestureDetected = remember { mutableStateOf(false) }
+    //endregion
 
     return Box(
         modifier = modifier,
         contentAlignment = contentAlignment
     ) {
+        //region Image
         Image(
             modifier = Modifier
                 .fillMaxSize()
@@ -93,7 +104,7 @@ fun ZoomableImageBox(
                             val angleRad = angle.value * PI / 180.0
                             offsetX.value += (x * cos(angleRad) - y * sin(angleRad)).toFloat()
                             offsetY.value += (x * sin(angleRad) + y * cos(angleRad)).toFloat()
-                            showResetButton.value = true
+                            isGestureDetected.value = true
                         }
                     )
                 },
@@ -101,21 +112,22 @@ fun ZoomableImageBox(
             painter = painter,
             contentScale = imageContentScale
         )
+        //endregion
 
-        if (showResetButton.value) {
+        //region reset button
+        if (showResetIconButton && isGestureDetected.value) {
             IconButton(
-                modifier = Modifier
-                    .padding(ICON_PADDING.dp)
-                    .background(MaterialTheme.colors.surface, shape = CircleShape),
+                modifier = resetIconButtonModifier,
                 onClick = {
                     angle.value = INITIAL_ANGLE
                     zoom.value = INITIAL_ZOOM
                     offsetX.value = INITIAL_OFFSET
                     offsetY.value = INITIAL_OFFSET
-                    showResetButton.value = false
+                    isGestureDetected.value = false
                 },
-                content = resetIconContent
+                content = resetIconButtonContent
             )
         }
+        //endregion
     }
 }
