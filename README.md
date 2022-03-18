@@ -5,9 +5,9 @@ ZoomableImageBox
 
 ## Presentation ##
 
-This is the source code of an Android library: `-=:[ ZoomableImageBox ]:=-`
+This is the source code of an Android Composable: `-=:[ ZoomableImageBox ]:=-`
 
-📃 [**Medium article**](https://medium.com/@lukelorusso) coming soon...
+📃 This Composable is inspired by [this solution](https://stackoverflow.com/a/67234570): it has been improved to be more generic and customizable.
 
 - - -
 
