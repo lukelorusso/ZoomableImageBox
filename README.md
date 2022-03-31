@@ -48,11 +48,11 @@ Step 2. use it in your Composable content:
 ```kotlin
     val painter = painterResource(id = R.drawable.your_wonderful_image_id)
     ZoomableImageBox(
-        painter = painter
+        painter = painter // you may want to use a bitmap instead!
     )
 ```  
 
-...eventually with some useful parameter:
+...eventually adding more useful parameters:
 
 ```kotlin
     ZoomableImageBox(
@@ -61,7 +61,7 @@ Step 2. use it in your Composable content:
             .background(MaterialTheme.colors.background),
         contentAlignment = Alignment.BottomEnd,
         contentDescription = "My image description",
-        painter = painter,
+        bitmap = myBitmap,
         imageContentScale = ContentScale.Inside,
         shouldRotate = true,
         showResetIconButton = true,

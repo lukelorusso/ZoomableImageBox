@@ -1,5 +1,6 @@
 package com.lukelorusso.zoomableimagebox.ui.view
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,7 +45,8 @@ private const val ICON_PADDING = 8
  * @param modifier applied to the [Box]
  * @param contentAlignment applied to the [Box]: determines the reset [IconButton] position
  * @param contentDescription of your [Image]
- * @param painter drawable resource of your [Image]
+ * @param bitmap to draw in your [Image]
+ * @param painter drawable resource of your [Image] (can be used instead of bitmap)
  * @param imageContentScale of your [Image]: can be changed
  * @param shouldRotate your [Image]: can be toggled on/off
  * @param showResetIconButton can be toggled on/off
@@ -57,7 +60,8 @@ fun ZoomableImageBox(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.BottomEnd,
     contentDescription: String? = null,
-    painter: Painter,
+    bitmap: Bitmap? = null,
+    painter: Painter? = null,
     imageContentScale: ContentScale = ContentScale.Inside,
     shouldRotate: Boolean = false,
     showResetIconButton: Boolean = true,
@@ -84,34 +88,49 @@ fun ZoomableImageBox(
         modifier = modifier,
         contentAlignment = contentAlignment
     ) {
-        //region Image
-        Image(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
-                .graphicsLayer(
-                    scaleX = zoom.value,
-                    scaleY = zoom.value,
-                    rotationZ = angle.value
+        val imageModifier = Modifier
+            .fillMaxSize()
+            .offset { IntOffset(offsetX.value.roundToInt(), offsetY.value.roundToInt()) }
+            .graphicsLayer(
+                scaleX = zoom.value,
+                scaleY = zoom.value,
+                rotationZ = angle.value
+            )
+            .pointerInput(Unit) {
+                detectTransformGestures(
+                    onGesture = { _, pan, gestureZoom, gestureRotate ->
+                        if (shouldRotate) angle.value += gestureRotate
+                        zoom.value *= gestureZoom
+                        val x = pan.x * zoom.value
+                        val y = pan.y * zoom.value
+                        val angleRad = angle.value * PI / 180.0
+                        offsetX.value += (x * cos(angleRad) - y * sin(angleRad)).toFloat()
+                        offsetY.value += (x * sin(angleRad) + y * cos(angleRad)).toFloat()
+                        isGestureDetected.value = true
+                    }
                 )
-                .pointerInput(Unit) {
-                    detectTransformGestures(
-                        onGesture = { _, pan, gestureZoom, gestureRotate ->
-                            if (shouldRotate) angle.value += gestureRotate
-                            zoom.value *= gestureZoom
-                            val x = pan.x * zoom.value
-                            val y = pan.y * zoom.value
-                            val angleRad = angle.value * PI / 180.0
-                            offsetX.value += (x * cos(angleRad) - y * sin(angleRad)).toFloat()
-                            offsetY.value += (x * sin(angleRad) + y * cos(angleRad)).toFloat()
-                            isGestureDetected.value = true
-                        }
-                    )
-                },
-            contentDescription = contentDescription,
-            painter = painter,
-            contentScale = imageContentScale
-        )
+            }
+
+        //region Image
+        when {
+            bitmap != null -> Image(
+                modifier = imageModifier,
+                contentDescription = contentDescription,
+                bitmap = bitmap.asImageBitmap(),
+                contentScale = imageContentScale
+            )
+
+            painter != null -> Image(
+                modifier = imageModifier,
+                contentDescription = contentDescription,
+                painter = painter,
+                contentScale = imageContentScale
+            )
+
+            else -> {
+            }
+        }
+
         //endregion
 
         //region reset button
