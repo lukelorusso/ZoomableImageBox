@@ -1,7 +1,7 @@
 ZoomableImageBox
 ===============
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![Release](https://img.shields.io/badge/UI-Jetpack%20Compose-brightgreen)](https://developer.android.com/jetpack/compose)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![Release](https://jitpack.io/v/lukelorusso/ZoomableImageBox.svg)](https://jitpack.io/#lukelorusso/ZoomableImageBox) [![Release](https://img.shields.io/badge/UI-Jetpack%20Compose-brightgreen)](https://developer.android.com/jetpack/compose)
 
 ## Presentation ##
 
@@ -34,16 +34,30 @@ What you got:
 
 Step 0. be sure that your Android project is ready for  [**Jetpack Compose**](https://developer.android.com/jetpack/compose/interop/adding)
 
-Step 1. add the `ZoomableImageBox.kt` Composable to your project. You can find it here:
-[**ZoomableImageBox.kt**](https://github.com/lukelorusso/ZoomableImageBox/blob/master/app/src/main/java/com/lukelorusso/zoomableimagebox/ui/view/ZoomableImageBox.kt)
-
 ##### DISCLAIMER #####
 
 This code is licensed under the __Apache License Version 2.0__, _which means that_ you can freely use, modify, distribute and sell this code without worrying about the use of software: personal, internal or commercial.
 
 **Just remember to keep the JavaDoc which contains the Copyright mention** (the part which starts with `/**` and ends with `*/` for instance)
 
-Step 2. use it in your Composable content:
+Step 1. add the JitPack repository to your ROOT build.gradle at the end of repositories:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Step 2. add the dependency:
+
+```groovy
+    implementation 'com.github.lukelorusso:ZoomableImageBox:1.0.0'
+```
+
+Step 3. use it in your Composable content:
 
 ```kotlin
     val painter = painterResource(id = R.drawable.your_wonderful_image_id)
