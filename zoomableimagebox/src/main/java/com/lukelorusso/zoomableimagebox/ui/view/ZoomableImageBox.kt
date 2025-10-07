@@ -20,11 +20,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.lukelorusso.zoomableimagebox.ui.view.GestureData.Companion.update
 import kotlin.math.*
 
-private const val INITIAL_ANGLE = 0f
-private const val INITIAL_ZOOM = 1f
-private const val INITIAL_OFFSET = 0f
 private const val ICON_PADDING = 8
 
 /**
@@ -40,6 +38,8 @@ private const val ICON_PADDING = 8
  * @param imageContentScale of your [Image]: can be changed
  * @param shouldRotate your [Image]: can be toggled on/off
  * @param showResetIconButton can be toggled on/off
+ * @param initialGestureData if you need a different starting point
+ * @param onGestureDataChanged a callback to intercept gesture events
  * @param resetIconButtonModifier is the customizable modifier of the [IconButton], which contains
  *  the resetIconButtonContent (useful if showResetButton is true)
  * @param resetIconButtonContent is the customizable content of the [IconButton] (useful if
@@ -55,6 +55,8 @@ fun ZoomableImageBox(
     imageContentScale: ContentScale = ContentScale.Inside,
     shouldRotate: Boolean = false,
     showResetIconButton: Boolean = true,
+    initialGestureData: GestureData = GestureData.new(),
+    onGestureDataChanged: ((GestureData) -> Unit)? = null,
     resetIconButtonModifier: Modifier = Modifier
         .padding(ICON_PADDING.dp)
         .background(MaterialTheme.colors.surface, shape = CircleShape),
@@ -67,11 +69,7 @@ fun ZoomableImageBox(
     }
 ) {
     //region properties
-    var angle by remember { mutableFloatStateOf(INITIAL_ANGLE) }
-    var zoom by remember { mutableFloatStateOf(INITIAL_ZOOM) }
-    var offsetX by remember { mutableFloatStateOf(INITIAL_OFFSET) }
-    var offsetY by remember { mutableFloatStateOf(INITIAL_OFFSET) }
-    var isGestureDetected by remember { mutableStateOf(false) }
+    var gestureData by remember { mutableStateOf(initialGestureData) }
     //endregion
 
     return Box(
@@ -80,23 +78,30 @@ fun ZoomableImageBox(
     ) {
         val imageModifier = Modifier
             .fillMaxSize()
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+            .offset { IntOffset(gestureData.offsetX.roundToInt(), gestureData.offsetY.roundToInt()) }
             .graphicsLayer(
-                scaleX = zoom,
-                scaleY = zoom,
-                rotationZ = angle
+                scaleX = gestureData.zoom,
+                scaleY = gestureData.zoom,
+                rotationZ = gestureData.angle
             )
             .pointerInput(Unit) {
                 detectTransformGestures(
                     onGesture = { _, pan, gestureZoom, gestureRotate ->
-                        if (shouldRotate) angle += gestureRotate
-                        zoom *= gestureZoom
-                        val x = pan.x * zoom
-                        val y = pan.y * zoom
-                        val angleRad = angle * PI / 180.0
-                        offsetX += (x * cos(angleRad) - y * sin(angleRad)).toFloat()
-                        offsetY += (x * sin(angleRad) + y * cos(angleRad)).toFloat()
-                        isGestureDetected = true
+                        var newAngle = gestureData.angle
+                        var newZoom = gestureData.zoom
+                        var newOffsetX = gestureData.offsetX
+                        var newOffsetY = gestureData.offsetY
+
+                        if (shouldRotate) newAngle += gestureRotate
+                        newZoom *= gestureZoom
+                        val x = pan.x * newZoom
+                        val y = pan.y * newZoom
+                        val angleRad = newAngle * PI / 180.0
+                        newOffsetX += (x * cos(angleRad) - y * sin(angleRad)).toFloat()
+                        newOffsetY += (x * sin(angleRad) + y * cos(angleRad)).toFloat()
+                        gestureData = gestureData.update(newAngle, newZoom, newOffsetX, newOffsetY)
+
+                        onGestureDataChanged?.invoke(gestureData)
                     }
                 )
             }
@@ -124,15 +129,12 @@ fun ZoomableImageBox(
         //endregion
 
         //region reset button
-        if (showResetIconButton && isGestureDetected) {
+        if (showResetIconButton && gestureData.isGestureDetected) {
             IconButton(
                 modifier = resetIconButtonModifier,
                 onClick = {
-                    angle = INITIAL_ANGLE
-                    zoom = INITIAL_ZOOM
-                    offsetX = INITIAL_OFFSET
-                    offsetY = INITIAL_OFFSET
-                    isGestureDetected = false
+                    gestureData = GestureData.new()
+                    onGestureDataChanged?.invoke(gestureData)
                 },
                 content = resetIconButtonContent
             )

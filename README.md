@@ -54,7 +54,7 @@ allprojects {
 Step 2. add the dependency:
 
 ```groovy
-    implementation 'com.github.lukelorusso:ZoomableImageBox:1.0.1'
+    implementation 'com.github.lukelorusso:ZoomableImageBox:1.0.2'
 ```
 
 Step 3. use it in your Composable content:

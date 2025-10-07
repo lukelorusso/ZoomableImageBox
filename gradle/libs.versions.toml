@@ -2,7 +2,7 @@
 android-gradle-plugin = "8.12.3"
 android-compileSdk = "36"
 android-minSdk = "21"
-android-versionName = "1.0.1" # REMEMBER: also update README.md
+android-versionName = "1.0.2" # REMEMBER: also update README.md
 androidx-activity-compose = "1.11.0"
 androidx-compose = "1.9.2"
 androidx-compose-bom = "2025.09.01"
