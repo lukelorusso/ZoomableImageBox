@@ -45,7 +45,7 @@ Step 1. add the JitPack repository to your ROOT build.gradle at the end of repos
 ```groovy
 allprojects {
     repositories {
-        ...
+        // among other things
         maven { url 'https://jitpack.io' }
     }
 }
@@ -79,6 +79,8 @@ Step 3. use it in your Composable content:
         imageContentScale = ContentScale.Inside,
         shouldRotate = true,
         showResetIconButton = true,
+        initialGestureData = GestureData(angle, zoom, offsetX, offsetY),
+        onGestureDataChanged = { gestureData -> },
         resetIconButtonModifier = Modifier
             .padding(8.dp)
             .background(MaterialTheme.colors.surface, shape = CircleShape),
