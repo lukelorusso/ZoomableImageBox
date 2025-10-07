@@ -20,7 +20,7 @@ This is the source code of an Android Composable: `-=:[ ZoomableImageBox ]:=-`
 What you got:
 - chose your modifiers
 - possibility to add and customize a reset button
-- rotation can be enable or disabled as needed
+- rotation can be enabled or disabled as needed
 - fully developed with Jetpack Compose
 - easy as declaring a Composable Box
 - and much more!
@@ -54,7 +54,7 @@ allprojects {
 Step 2. add the dependency:
 
 ```groovy
-    implementation 'com.github.lukelorusso:ZoomableImageBox:1.0.0'
+    implementation 'com.github.lukelorusso:ZoomableImageBox:1.0.1'
 ```
 
 Step 3. use it in your Composable content:
@@ -105,11 +105,14 @@ It's all up to you!
 
 # Explore! #
 
-Feel free to checkout and launch the example app 🎡
+Feel free to check out and launch the example app 🎡
 
 Also, see where using this code has been the perfect choice:
 
-[![Swissquote Trading](press/swissquote_trading.png)](https://play.google.com/store/apps/details?id=com.swissquote.android)  
+[![ColorBlindClick](press/colorblindclick_launcher.png)](https://play.google.com/store/apps/details?id=com.lukelorusso.colorblindclick)  
+[**ColorBlindClick**](https://play.google.com/store/apps/details?id=com.lukelorusso.colorblindclick)
+
+[![Swissquote Trading](press/swissquote_trading_launcher.png)](https://play.google.com/store/apps/details?id=com.swissquote.android)  
 [**Swissquote Trading**](https://play.google.com/store/apps/details?id=com.swissquote.android)
 
 - - -

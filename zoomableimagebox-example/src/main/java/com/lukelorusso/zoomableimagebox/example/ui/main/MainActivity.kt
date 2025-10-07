@@ -1,9 +1,9 @@
-package com.lukelorusso.zoomableimagebox.ui.screen.main
+package com.lukelorusso.zoomableimagebox.example.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.lukelorusso.zoomableimagebox.ui.theme.AppTheme
+import com.lukelorusso.zoomableimagebox.example.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

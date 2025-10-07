@@ -1,11 +1,11 @@
-package com.lukelorusso.zoomableimagebox.ui.theme
+package com.lukelorusso.zoomableimagebox.example.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import com.lukelorusso.zoomableimagebox.R
+import com.lukelorusso.zoomableimagebox.example.R
 
 @Composable
 fun resolveColors(darkTheme: Boolean): Colors = if (darkTheme) {

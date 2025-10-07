@@ -1,4 +1,4 @@
-package com.lukelorusso.zoomableimagebox.ui.theme
+package com.lukelorusso.zoomableimagebox.example.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
